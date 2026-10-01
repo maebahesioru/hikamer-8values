@@ -148,6 +148,12 @@ export default function QuizFlow() {
     window.scrollTo({ top: 0 });
   }
 
+  /** 途中再開した時などに、最初からやり直す（確認付き） */
+  function restart() {
+    if (!window.confirm("最初からやり直しますか？（ここまでの回答は消えます）")) return;
+    retry();
+  }
+
   if (!hydrated) {
     return (
       <main className="mx-auto w-full max-w-3xl grow px-4 pb-24 pt-8">
@@ -201,7 +207,7 @@ export default function QuizFlow() {
           ))}
         </div>
 
-        <div className="mt-8 flex items-center justify-between">
+        <div className="mt-8 flex flex-wrap items-center justify-between gap-3">
           <button
             onClick={() => {
               if (idx > 0) {
@@ -214,9 +220,19 @@ export default function QuizFlow() {
           >
             ← 前の質問
           </button>
-          {answers[idx] !== null && (
-            <span className="text-xs text-mut">回答済み（タップで変更できます）</span>
-          )}
+          <div className="flex items-center gap-3">
+            {answers[idx] !== null && (
+              <span className="text-xs text-mut">回答済み（タップで変更できます）</span>
+            )}
+            {(idx > 0 || answers.some((a) => a !== null)) && (
+              <button
+                onClick={restart}
+                className="text-xs text-mut underline underline-offset-2 transition hover:text-foreground"
+              >
+                最初からやり直す
+              </button>
+            )}
+          </div>
         </div>
       </div>
 
