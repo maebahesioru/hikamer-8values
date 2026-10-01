@@ -121,7 +121,7 @@ export const IDEOLOGIES: Ideology[] = [
   },
   {
     id: "inmer",
-    name: "インマー主義",
+    name: "ヒカマニ混血主義",
     tags: "🟥",
     desc: "淫夢・例のアレとの混交を積極的に楽しむヒカマー。界隈では淫夢の否定はハラーム（禁忌）とされるほど、混交は標準文化になった。",
     flavor: "別名: インマー",
@@ -224,7 +224,7 @@ export const IDEOLOGIES: Ideology[] = [
   // ===== 勢力・人々（wikiカテゴリ「勢力」ほか） =====
   {
     id: "hikamani-people",
-    name: "ヒカマニ民主義",
+    name: "ヒカマニ民族主義",
     tags: "",
     desc: "ヒカマニ外伝を愛好する保守派。ヒカキン聖人説を信じ、開發叩きや制裁、例のアレとの融合に消極的。自治厨的な文化も根強かった。",
     flavor: "ヒカマニ界隈の主流派／最古のヒカマニ民はマニアさん（2017〜2023）／LINEオープンチャット「ヒカマニ民達の集い」が存在／別名: ヒカマニ民",
@@ -232,7 +232,7 @@ export const IDEOLOGIES: Ideology[] = [
   },
   {
     id: "hikanoon",
-    name: "ヒカアノン主義",
+    name: "ヒカ騎士道",
     tags: "",
     desc: "ヒカキンの動画を普段見ていないのに、彼を極端に擁護する人々への蔑称。権威主義・弱者叩きの性質があり、左右どちらのヒカマーからも嫌われる。",
     flavor: "別名: ヒカアノン（包ヒ民・ヒカキンナイト・ヒカ騎士）／最初に使ったのはヒカマーズ決済",
@@ -240,7 +240,7 @@ export const IDEOLOGIES: Ideology[] = [
   },
   {
     id: "tsuihai-ochi",
-    name: "ツイ廃堕ち主義",
+    name: "ツイ廃堕天主義",
     tags: "",
     desc: "ヒカマーから離れてツイ廃界隈に移行した人。裏切り者と見なされ、犯罪自慢やパクツイで稼ぐ者が多く、ヒカマーからも非カマーからも嫌われる。",
     flavor: "wiki「ツイ廃」: ツイ廃に移行する行為は「ツイ廃堕ち」と呼ばれる／別名: ツイ廃堕ち",
@@ -248,15 +248,15 @@ export const IDEOLOGIES: Ideology[] = [
   },
   {
     id: "jichichu",
-    name: "自治厨主義",
+    name: "正義マン主義",
     tags: "",
     desc: "自分ルールで他人を従わせる正義マン。界隈では「著作権の指摘」「制裁への反対」「反政治発言」「ヒカキン擁護」などが自治厨行為とされやすい。",
-    flavor: "主な自治厨とされる界隈: ヒカマニ民・ヒカアノン／別名: 自治厨",
+    flavor: "別名: 自治厨（「正義マン」「〇〇警察」とも）／主な自治厨とされる界隈: ヒカマニ民・ヒカアノン",
     ideal: { trad: 40, rad: -70, exp: -60, lib: -80, dev: 20, gen: 30, sanc: -60, pol: -30, nare: -30 },
   },
   {
     id: "norichiga",
-    name: "ノリチガ主義",
+    name: "違和感主義",
     tags: "",
     desc: "「ノリが違う」人の蔑称。批判されても改めず固執するほど嫌われるが、過度な認定は自治厨とされる諸刃の剣。ツイ廃発祥の言葉であることから改名運動もあり、対案は「シュールストレミング」「クセマー」。",
     flavor: "別名: ノリチガ",
@@ -264,7 +264,7 @@ export const IDEOLOGIES: Ideology[] = [
   },
   {
     id: "otoma",
-    name: "音MAD主義",
+    name: "音MAD至上主義",
     tags: "",
     desc: "音MAD作者。かつては「音マーにブロックされることがヒカマーの認定証」とされ、界隈における格式そのもの。神聖ないじり対象。",
     flavor: "別名: 音マー（音MADを作る全員への呼称）／さくれい主催「HikakinTV十年祭」合作はヒカキン本人が視聴・絶賛（2025）",
@@ -272,7 +272,7 @@ export const IDEOLOGIES: Ideology[] = [
   },
   {
     id: "gaiden-shokunin",
-    name: "外伝職人主義",
+    name: "外伝名工主義",
     tags: "🟦",
     desc: "ヒカマニ外伝を投稿し続ける職人。保守派の本丸で、動画サイトを拠点に長期的な作品を作り続ける。",
     flavor: "別名: ヒカマニ外伝職人",
@@ -280,7 +280,7 @@ export const IDEOLOGIES: Ideology[] = [
   },
   {
     id: "hikanichi-shokunin",
-    name: "ヒカニチ職人主義",
+    name: "ヒカニチ劇場主義",
     tags: "🟩",
     desc: "ヒカニチ（ヒカキンの日常）系のストーリー動画を作る投稿者。穏健で大衆的、外伝職人とは別系統の作り手。",
     flavor: "別名: ヒカニチ職人",
@@ -288,7 +288,7 @@ export const IDEOLOGIES: Ideology[] = [
   },
   {
     id: "gijutsukei",
-    name: "ヒカマー技術主義",
+    name: "電脳奉仕主義",
     tags: "",
     desc: "Bot・サイト・サーバーを自作して界隈のインフラを支えるタイプ。レスバよりコミットで語り、ツールで愛を示す。",
     flavor: "別名: 技術系ヒカマー",
@@ -296,7 +296,7 @@ export const IDEOLOGIES: Ideology[] = [
   },
   {
     id: "cyber-bu",
-    name: "サイバー部主義",
+    name: "情報開示主義",
     tags: "",
     desc: "情報収集と開示を担うグループ。専用wikiを持ち、対象者の情報がまとめられることも。オフライン交流も確認されている。",
     flavor: "別名: ヒカマーズサイバー部",
@@ -304,7 +304,7 @@ export const IDEOLOGIES: Ideology[] = [
   },
   {
     id: "donamers",
-    name: "ドナマーズ主義",
+    name: "帝国ごっこ主義",
     tags: "",
     desc: "荒らし集団「ドナマーズ」を中心とした帝国。公式アカで帝国ムーブを展開し、カードゲームではドナマニがSSR（排出率2%）として実装。特殊能力は「ドナマーズ制裁」。",
     flavor: "率いるのはドナマニ（@Donamani57）／別名: ドナマーズ帝国臣民",
@@ -312,10 +312,10 @@ export const IDEOLOGIES: Ideology[] = [
   },
   {
     id: "azoku",
-    name: "あ族主義",
+    name: "よろ珍主義",
     tags: "",
     desc: "2026年8月にカニあのパロディから生まれた集団。魚介＋「あ」の命名規則、挨拶は「よろ珍」。一過性の内輪ノリとして消滅しつつある。",
-    flavor: "別名: あ族",
+    flavor: "別名: あ族（挨拶は「よろ珍」、魚介＋「あ」の命名規則）",
     ideal: { trad: -70, rad: -40, exp: 60, lib: 10, dev: -10, gen: -70, sanc: -50, pol: -50, nare: 80 },
   },
   {
@@ -328,7 +328,7 @@ export const IDEOLOGIES: Ideology[] = [
   },
   {
     id: "botomer",
-    name: "ボトマー主義",
+    name: "最底辺主義",
     tags: "",
     desc: "特定対象への粘着をアイデンティティとする人々。偽装アカウントの運用や暴露騒動もあり、「ヒカマーの最底辺」と揶揄される。",
     flavor: "別名: ボトマー",
@@ -336,7 +336,7 @@ export const IDEOLOGIES: Ideology[] = [
   },
   {
     id: "meigenbot",
-    name: "不謹慎主義",
+    name: "垂れ流し主義",
     tags: "",
     desc: "名言と無関係の不謹慎ツイートを垂れ流すbot群。全盛期は「不謹慎なツイート図鑑」に載ることが目的化した。現在は大半が衰退し、ヒカマーからも敵対されている。",
     flavor: "別名: 名言bot",
@@ -344,7 +344,7 @@ export const IDEOLOGIES: Ideology[] = [
   },
   {
     id: "neo-nazi-shineitai",
-    name: "ネオナチズム",
+    name: "自称ネオナチズム",
     tags: "",
     desc: "ネオミド率いる過激派。ネオナチを自称し、若手を巻き込んだ騒動を繰り返してきた。ブルアカ界隈からも嫌われ、指導者は性加害の暴露で活動停止に追い込まれた。",
     flavor: "別名: ネオナチ親衛隊",
@@ -352,7 +352,7 @@ export const IDEOLOGIES: Ideology[] = [
   },
   {
     id: "digital-sekigun",
-    name: "デジタル赤軍主義",
+    name: "武装観戦主義",
     tags: "",
     desc: "ヒカマー内戦を外から眺める勢力。赤軍BBSを拠点に動き、爆破予告文の送信などの騒動にも名前が上がった。",
     flavor: "別名: 日本デジタル赤軍",
@@ -360,7 +360,7 @@ export const IDEOLOGIES: Ideology[] = [
   },
   {
     id: "favonashi-kagekiha",
-    name: "ファボなし主義",
+    name: "いいね禁止主義",
     tags: "",
     desc: "「空気を読めない人間は排除」する制裁クラスタの急先鋒。ファボなしRTの流れへの「いいね」は暗黙のタブーで、破れば制裁対象。みやま関連・「全部rawで見た」構文・ヒカアノン等が主な標的だが、磯野（@Isono_Kazumasa）のようにあえて逆張りする先駆けもいる。",
     flavor: "別名: ファボなし過激派",
@@ -368,7 +368,7 @@ export const IDEOLOGIES: Ideology[] = [
   },
   {
     id: "hikakou-kenshou",
-    name: "ヒカ恒主義",
+    name: "二重国籍主義",
     tags: "",
     desc: "ヒカマーと恒心教徒を兼任する二重国籍勢。匿名文化とアングラの作法をわきまえ、炎上依頼や自語りなどのタブーを踏まない。",
     flavor: "別名: ヒカ恒兼任",
@@ -376,7 +376,7 @@ export const IDEOLOGIES: Ideology[] = [
   },
   {
     id: "hikanichi-min",
-    name: "ヒカニチ民主義",
+    name: "茶の間主義",
     tags: "",
     desc: "ヒカニチや「開示だな」などライトな界隈コンテンツしか見ない層。ヒカキッズとほぼ同義になりつつあり、名称も流動的。",
     flavor: "呼称一覧: 名称候補「ヒカニチ民」「開示キッズ」／別名: ヒカニチ民",
@@ -385,10 +385,10 @@ export const IDEOLOGIES: Ideology[] = [
   // ===== 属性・立場 =====
   {
     id: "rom-ma",
-    name: "ROM専主義",
+    name: "読み取り専用主義",
     tags: "",
     desc: "アカウントは作らず・投稿せず、見るだけの人。最高の聴衆であり、最も安全な立場。",
-    flavor: "別名: ROMマー",
+    flavor: "別名: ROMマー（Read Only Memory＝読み取り専用）",
     ideal: { trad: 0, rad: -40, exp: -60, lib: 0, dev: 10, gen: 10, sanc: -50, pol: -30, nare: -60 },
   },
   {
@@ -409,7 +409,7 @@ export const IDEOLOGIES: Ideology[] = [
   },
   {
     id: "ai-generation",
-    name: "AI生成主義",
+    name: "プロンプト崇拝主義",
     tags: "",
     desc: "AIでヒカマニコンテンツを量産するタイプ。2026年はSora2期（ヒカキンくん_mania等）とGemini動画生成の無料化で二度隆盛し、反AI勢との抗争が続く。あなたの作品、誰が作った？",
     flavor: "別名: AI生成勢",
@@ -417,7 +417,7 @@ export const IDEOLOGIES: Ideology[] = [
   },
   {
     id: "kaigai-fukyou",
-    name: "海外布教主義",
+    name: "万国布教主義",
     tags: "",
     desc: "翻訳や海外向け発信で界隈を世界へ広げる人。ヒカマーwikiには英語・中国語・韓国語の翻訳版が存在し、海外布教の実績が残る。",
     flavor: "別名: 海外布教民",
@@ -425,7 +425,7 @@ export const IDEOLOGIES: Ideology[] = [
   },
   {
     id: "seichi-junrei",
-    name: "聖地巡礼主義",
+    name: "聖地踏破主義",
     tags: "",
     desc: "開発邸・野獣邸・ヒカマニ山・みやま市など、全国（と海外）に広がる「聖地」を実際に踏む人。けんまの作法をわきまえ、ギリギリのラインで楽しむ。",
     flavor: "別名: 聖地巡礼勢",
@@ -434,7 +434,7 @@ export const IDEOLOGIES: Ideology[] = [
   // ===== 一般 =====
   {
     id: "non-hikamer",
-    name: "非カマー主義",
+    name: "局外中立主義",
     tags: "",
     desc: "界隈に属さない一般ネットユーザー。この結果が出るのはむしろ希少。ようこそ、外の世界へ。",
     flavor: "別名: 非カマー",
