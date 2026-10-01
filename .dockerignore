@@ -1,0 +1,10 @@
+node_modules
+.next
+.git
+.github
+*.log
+*.pem
+.env
+.env.*
+__pycache__
+*.pyc
