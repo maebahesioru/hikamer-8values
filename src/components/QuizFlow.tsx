@@ -1,7 +1,8 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { QUESTIONS } from "@/data/questions";
 import {
   AXIS_META,
@@ -37,14 +38,89 @@ const GAUGE_ORDER: Record<Axis, { left: string; right: string; leftIsPlus: boole
   nare: { left: "孤高", right: "馴れ合い", leftIsPlus: false, color: "#66d9e8" },
 };
 
+/** 診断の進捗をリロード後も復元するための保存キー */
+const STORAGE_KEY = "hikamer8values.progress.v1";
+
+interface SavedProgress {
+  v: number;
+  idx: number;
+  phase: "quiz" | "result";
+  answers: (number | null)[];
+}
+
 export default function QuizFlow() {
+  const router = useRouter();
   const [idx, setIdx] = useState(0);
   const [answers, setAnswers] = useState<(number | null)[]>(() =>
     Array(QUESTIONS.length).fill(null),
   );
   const [phase, setPhase] = useState<"quiz" | "result">("quiz");
+  const [hydrated, setHydrated] = useState(false);
 
   const total = QUESTIONS.length;
+
+  // 初回ロード: 保存済みの進捗を復元。未開始のまま直接 /quiz に来た場合はトップへ戻す。
+  useEffect(() => {
+    let restored = false;
+    try {
+      const raw = window.localStorage.getItem(STORAGE_KEY);
+      if (raw) {
+        const saved = JSON.parse(raw) as SavedProgress;
+        if (
+          saved &&
+          saved.v === total &&
+          Array.isArray(saved.answers) &&
+          saved.answers.length === total
+        ) {
+          const savedAnswers = saved.answers.map((a) =>
+            typeof a === "number" && a >= -2 && a <= 2 ? a : null,
+          );
+          const complete = savedAnswers.every((a) => a !== null);
+          setAnswers(savedAnswers);
+          if (saved.phase === "result" && complete) {
+            setPhase("result");
+          } else {
+            setPhase("quiz");
+            setIdx(Math.min(Math.max(saved.idx || 0, 0), total - 1));
+          }
+          restored = true;
+        }
+      }
+    } catch {
+      /* 壊れた保存データは無視して新規扱い */
+    }
+
+    if (!restored) {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get("start") === "1") {
+        // トップの「診断をはじめる」経由: 空の進捗を作って開始
+        try {
+          const fresh: SavedProgress = {
+            v: total,
+            idx: 0,
+            phase: "quiz",
+            answers: Array(total).fill(null),
+          };
+          window.localStorage.setItem(STORAGE_KEY, JSON.stringify(fresh));
+        } catch {}
+        window.history.replaceState(null, "", "/quiz");
+      } else {
+        // 未開始の直アクセス: トップページへ
+        router.replace("/");
+        return;
+      }
+    }
+    setHydrated(true);
+  }, [router, total]);
+
+  // 進捗を都度保存（リロード・タブ復帰用）
+  useEffect(() => {
+    if (!hydrated) return;
+    try {
+      const data: SavedProgress = { v: total, idx, phase, answers };
+      window.localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    } catch {}
+  }, [hydrated, idx, phase, answers, total]);
 
   const result = useMemo(() => {
     if (phase !== "result") return null;
@@ -70,6 +146,14 @@ export default function QuizFlow() {
     setIdx(0);
     setPhase("quiz");
     window.scrollTo({ top: 0 });
+  }
+
+  if (!hydrated) {
+    return (
+      <main className="mx-auto w-full max-w-3xl grow px-4 pb-24 pt-8">
+        <p className="mt-24 text-center text-sm text-mut">読み込み中…</p>
+      </main>
+    );
   }
 
   if (phase === "result" && result) {

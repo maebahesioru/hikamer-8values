@@ -46,7 +46,7 @@ export default function Home() {
       <header className="mx-auto flex w-full max-w-5xl items-center justify-between px-4 pt-6">
         <span className="text-sm font-black tracking-wider">ヒカマーズ8values</span>
         <Link
-          href="/quiz"
+          href="/quiz?start=1"
           className="rounded-lg border border-line px-4 py-2 text-xs font-bold transition hover:border-accent"
         >
           診断する
@@ -69,7 +69,7 @@ export default function Home() {
           「ヒカマー界隈のイデオロギー一覧」「勢力」カテゴリ。
         </p>
         <Link
-          href="/quiz"
+          href="/quiz?start=1"
           className="inline-block rounded-2xl bg-accent px-10 py-4 text-lg font-black text-white transition hover:opacity-90"
         >
           診断をはじめる
