@@ -10,6 +10,7 @@ import {
   rankIdeologies,
   daiHikamerSubtype,
   shareText,
+  topAxes,
   type Scores,
   type MatchResult,
 } from "@/lib/scoring";
@@ -197,6 +198,18 @@ function ResultView({
           <p className="mb-4 text-xs text-mut">{main.ideology.flavor}</p>
         )}
         <p className="text-xs text-mut">一致度 {main.match}%</p>
+        <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
+          <span className="text-xs text-mut">強い傾向:</span>
+          {topAxes(scores, 3).map((t) => (
+            <span
+              key={t.label}
+              className="rounded-full border border-line bg-panel2 px-3 py-1 text-xs"
+            >
+              {t.label}{" "}
+              <span className="font-bold tabular-nums text-accent">{t.value}</span>
+            </span>
+          ))}
+        </div>
       </div>
 
       {/* 8つの価値（4軸ゲージ） */}
