@@ -187,7 +187,7 @@ function ResultView({
         </h2>
         {sub && (
           <p className="mb-3 text-sm font-bold text-amber">
-            三次分類: {sub.name} — {sub.desc}
+            分類: {sub.name} — {sub.desc}
           </p>
         )}
         <p className="mx-auto mb-4 max-w-xl text-sm leading-relaxed text-foreground/90">
