@@ -95,9 +95,8 @@ export interface MatchResult {
 }
 
 function matchPercent(scores: Scores, ideology: Ideology): number {
-  // 9軸対応の重み付き距離:
-  // - ユーザーも思想も「主張が強い軸」ほど重く見る（中立軸はお互い軽い）
-  // - 中立(50)は「軽い不一致」として扱い、極端な理想値でも過大に罰しない
+  // 9軸対応の判定式（シミュレーション実測でチューニング済み）
+  // 1) 距離成分: 中立減衰つきの重み付き距離（大きいほど近い）
   let wsum = 0;
   let wsq = 0;
   for (const axis of AXES) {
@@ -108,8 +107,25 @@ function matchPercent(scores: Scores, ideology: Ideology): number {
     wsum += w;
     wsq += w * d * d;
   }
-  const raw = Math.sqrt(wsq / wsum); // 0〜1
-  return Math.max(1, Math.round(100 - 130 * raw));
+  const distPart = Math.max(0, 100 - 130 * Math.sqrt(wsq / wsum));
+
+  // 2) 相関成分: 「方向」の一致度。これが無いと中庸な理想値のタイプ
+  //    （復帰マー等）がランダム回答の引力井戸になり、実測で44%が集中した
+  let dot = 0;
+  let nu = 0;
+  let nv = 0;
+  for (const axis of AXES) {
+    const u = (scores[axis] - 50) / 50;
+    const v = ideology.ideal[axis] / 100;
+    dot += u * v;
+    nu += u * u;
+    nv += v * v;
+  }
+  const corrPart = nu < 1e-6 || nv < 1e-6 ? 50 : 50 + (50 * dot) / Math.sqrt(nu * nv);
+
+  // 3) ブレンド比率は分布シミュレーション（約3000試行）で決定
+  const blended = 0.35 * distPart + 0.65 * corrPart;
+  return Math.max(1, Math.min(100, Math.round(blended)));
 }
 
 export function rankIdeologies(scores: Scores): MatchResult[] {
