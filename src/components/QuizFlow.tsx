@@ -24,11 +24,16 @@ const OPTIONS: { label: string; value: number }[] = [
   { label: "反対", value: -2 },
 ];
 
-const GAUGE_ORDER: Record<Axis, { left: string; leftIsPlus: boolean; color: string }> = {
-  trad: { left: "伝統", leftIsPlus: true, color: "#f4a261" },
-  rad: { left: "穏健", leftIsPlus: false, color: "#57d9a3" },
-  exp: { left: "閉鎖", leftIsPlus: false, color: "#b197fc" },
-  lib: { left: "秩序", leftIsPlus: false, color: "#74c0fc" },
+const GAUGE_ORDER: Record<Axis, { left: string; right: string; leftIsPlus: boolean; color: string }> = {
+  trad: { left: "伝統", right: "進歩", leftIsPlus: true, color: "#f4a261" },
+  rad: { left: "穏健", right: "過激", leftIsPlus: false, color: "#57d9a3" },
+  exp: { left: "閉鎖", right: "拡大", leftIsPlus: false, color: "#b197fc" },
+  lib: { left: "秩序", right: "自由", leftIsPlus: false, color: "#74c0fc" },
+  dev: { left: "反開發", right: "親開發", leftIsPlus: false, color: "#ff8787" },
+  gen: { left: "世代フラット", right: "古参崇敬", leftIsPlus: false, color: "#63e6be" },
+  sanc: { left: "平和", right: "制裁", leftIsPlus: false, color: "#d0bfff" },
+  pol: { left: "非政治", right: "政治親和", leftIsPlus: false, color: "#a9e34b" },
+  nare: { left: "孤高", right: "馴れ合い", leftIsPlus: false, color: "#66d9e8" },
 };
 
 export default function QuizFlow() {
@@ -196,7 +201,7 @@ function ResultView({
 
       {/* 8つの価値（4軸ゲージ） */}
       <section className="mb-8 rounded-2xl border border-line bg-panel p-6 md:p-8">
-        <h3 className="mb-5 text-sm font-bold tracking-widest text-mut">8つの価値</h3>
+        <h3 className="mb-5 text-sm font-bold tracking-widest text-mut">9つの軸（18の価値）</h3>
         <div className="flex flex-col gap-4">
           {AXES.map((axis) => (
             <GaugeRow key={axis} axis={axis} value={scores[axis]} />
@@ -273,7 +278,7 @@ function ResultView({
       <p className="text-center text-xs leading-relaxed text-mut">
         ※この診断は 8values のオマージュです。思想名・分類は界隈の呼称をネタとして扱ったもので、
         特定の立場の推奨ではありません。元ネタ: ヒカマーズグラフ・ヒカマーズ思想（@Hiwai_7）、
-        ヒカマーwiki「ヒカマー界隈のイデオロギー一覧」。
+        ヒカマーwiki「ヒカマー界隈のイデオロギー一覧」・「勢力」カテゴリ・呼称一覧。
       </p>
     </main>
   );
@@ -283,21 +288,16 @@ function GaugeRow({ axis, value }: { axis: Axis; value: number }) {
   const meta = AXIS_META[axis];
   const order = GAUGE_ORDER[axis];
   const leftPct = order.leftIsPlus ? value : 100 - value;
-  const rightLabel = [
-    { key: "trad", label: "進歩" },
-    { key: "rad", label: "過激" },
-    { key: "exp", label: "拡大" },
-    { key: "lib", label: "自由" },
-  ].find((r) => r.key === axis)!.label;
+  const rightLabel = order.right;
 
   return (
     <div>
-      <div className="mb-1.5 flex items-end justify-between text-sm">
-        <span className="font-bold">
+      <div className="mb-1.5 flex items-end justify-between gap-2 text-sm">
+        <span className="whitespace-nowrap font-bold">
           {order.left} <span className="tabular-nums">{leftPct}</span>
         </span>
-        <span className="text-xs text-mut">{meta.desc}</span>
-        <span className="font-bold text-mut">
+        <span className="hidden text-xs text-mut md:inline">{meta.desc}</span>
+        <span className="whitespace-nowrap font-bold text-mut">
           {rightLabel} <span className="tabular-nums">{100 - leftPct}</span>
         </span>
       </div>
