@@ -102,7 +102,7 @@ export const IDEOLOGIES: Ideology[] = [
     id: "hikanichism",
     name: "ヒカニチズム",
     tags: "🟩🟥",
-    desc: "「ヒカキンの日常（ヒカニチ）」を界隈の中心に据える立場。大衆的で穏健、誰にでも薦められる。",
+    desc: "HIKAKINの動画素材とフリー素材で作る穏健なストーリー系MAD「ヒカニチ（ヒカキンの日常）」を界隈の中心に据える立場。大衆的で穏健。",
     ideal: { trad: -70, rad: -60, exp: 40, lib: -10 },
   },
   {
