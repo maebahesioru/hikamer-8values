@@ -312,7 +312,7 @@ function ResultView({
         </div>
       </div>
 
-      {/* 8つの価値（4軸ゲージ） */}
+      {/* 9つの軸（18の価値） */}
       <section className="mb-8 rounded-2xl border border-line bg-panel p-6 md:p-8">
         <h3 className="mb-5 text-sm font-bold tracking-widest text-mut">9つの軸（18の価値）</h3>
         <div className="flex flex-col gap-4">
