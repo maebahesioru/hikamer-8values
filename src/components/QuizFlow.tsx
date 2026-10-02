@@ -488,6 +488,15 @@ function ResultView({
           >
             {copied ? "コピーしました" : "結果をコピー"}
           </button>
+          {myId && (
+            <a
+              href={`/api/card/${myId}?size=post`}
+              download={`hikamer8values-${myId}.png`}
+              className="rounded-xl border border-line bg-panel px-6 py-3 text-sm font-bold transition hover:border-accent"
+            >
+              画像で保存
+            </a>
+          )}
           <button
             onClick={onRetry}
             className="rounded-xl border border-line bg-panel px-6 py-3 text-sm font-bold transition hover:border-accent"
@@ -502,6 +511,14 @@ function ResultView({
               className="text-accent underline underline-offset-2 transition hover:opacity-80"
             >
               あなたの結果ページを見る（共有用）
+            </Link>
+          )}
+          {myId && (
+            <Link
+              href={`/compare?a=${myId}`}
+              className="text-mut underline underline-offset-2 transition hover:text-foreground"
+            >
+              相性診断で遊ぶ
             </Link>
           )}
           <Link

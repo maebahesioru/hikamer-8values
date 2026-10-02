@@ -164,10 +164,23 @@ export default async function StatsPage() {
             </p>
           </section>
 
+          <section className="mb-8 rounded-2xl border border-line bg-panel p-6 text-center md:p-8">
+            <h2 className="mb-2 text-sm font-bold tracking-widest text-mut">相性診断</h2>
+            <p className="mb-5 text-sm leading-relaxed">気になる2人を選んで、思想の相性を見てみよう。</p>
+            <Link
+              href="/compare"
+              className="inline-block rounded-xl bg-accent px-8 py-3 text-sm font-black text-white transition hover:opacity-90"
+            >
+              2人の相性を見る →
+            </Link>
+          </section>
+
           <div className="mb-8">
             <ShareButtons
               text={`【ヒカマーズ8values】みんなの結果（${t}件）公開中。平均に最も近いのは「${stats.avgNearest?.name ?? ""}」。`}
               url={`${SITE_URL}/stats`}
+              imageUrl="/stats/opengraph-image"
+              imageName="hikamer8values-stats.png"
             />
           </div>
 

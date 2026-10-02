@@ -156,7 +156,18 @@ export default async function PersonResultPage({ params }: { params: Promise<{ i
         <ShareButtons
           text={`【ヒカマーズ8values】\n${sub.n ?? "とあるヒカマー"}のヒカマニ思想は「${ideology?.name ?? sub.t}」(一致度${sub.m}%)でした。\nあなたも診断してみて。`}
           url={`${SITE_URL}/r/${sub.id}`}
+          imageUrl={`/r/${sub.id}/opengraph-image`}
+          imageName={`hikamer8values-${sub.id}.png`}
         />
+      </div>
+
+      <div className="mb-4 flex flex-wrap justify-center gap-3">
+        <Link
+          href={`/compare?a=${sub.id}`}
+          className="rounded-xl border border-line bg-panel px-6 py-3 text-sm font-bold transition hover:border-accent"
+        >
+          この人と比較する
+        </Link>
       </div>
 
       <div className="mb-10 flex flex-wrap justify-center gap-3">

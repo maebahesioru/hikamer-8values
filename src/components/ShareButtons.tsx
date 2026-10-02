@@ -2,8 +2,18 @@
 
 import { useState } from "react";
 
-/** Xシェア＋リンクコピー（サーバーページからも使えるクライアント部品） */
-export default function ShareButtons({ text, url }: { text: string; url: string }) {
+/** Xシェア＋リンクコピー＋（任意）画像保存（サーバーページからも使えるクライアント部品） */
+export default function ShareButtons({
+  text,
+  url,
+  imageUrl,
+  imageName,
+}: {
+  text: string;
+  url: string;
+  imageUrl?: string;
+  imageName?: string;
+}) {
   const [copied, setCopied] = useState(false);
   const intent = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`;
 
@@ -33,6 +43,15 @@ export default function ShareButtons({ text, url }: { text: string; url: string 
       >
         {copied ? "コピーしました" : "リンクをコピー"}
       </button>
+      {imageUrl && (
+        <a
+          href={imageUrl}
+          download={imageName ?? "hikamer8values.png"}
+          className="rounded-xl border border-line bg-panel px-5 py-2.5 text-sm font-bold transition hover:border-accent"
+        >
+          画像で保存
+        </a>
+      )}
     </div>
   );
 }

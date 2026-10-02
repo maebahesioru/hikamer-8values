@@ -10,9 +10,11 @@ const noto = Noto_Sans_JP({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://hikamer8values.hikamers.app"),
   title: "ヒカマーズ8values｜ヒカマニ思想診断",
   description:
     "全70問・9つの軸・52タイプで、あなたのヒカマニ思想を診断。ヒカマーズグラフ・ヒカマーズ思想（@Hiwai_7）とヒカマーwikiの思想・勢力分類を元ネタにしたファン診断サイト。",
+  twitter: { card: "summary_large_image" },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
