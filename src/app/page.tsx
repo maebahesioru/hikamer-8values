@@ -77,7 +77,7 @@ export default function Home() {
         <p className="mt-4 text-xs text-mut">所要時間: 約5分／登録不要／全52タイプ</p>
       </section>
 
-      {/* 4つの軸 */}
+      {/* 9つの軸 */}
       <section className="mx-auto w-full max-w-5xl px-4 pb-16">
         <h2 className="mb-6 text-center text-xl font-black">診断の9軸</h2>
         <div className="grid gap-4 md:grid-cols-2">
