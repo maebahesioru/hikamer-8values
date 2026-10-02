@@ -5,6 +5,8 @@ import { IDEOLOGIES } from "@/data/results";
 import { QUESTIONS } from "@/data/questions";
 import { GAUGE_ORDER } from "@/lib/axis-ui";
 import { findSubmission, fmtTs, loadSubmissions } from "@/lib/store";
+import ShareButtons from "@/components/ShareButtons";
+import { SITE_URL } from "@/lib/site";
 
 export const dynamic = "force-dynamic";
 
@@ -63,7 +65,9 @@ export default async function PersonResultPage({ params }: { params: Promise<{ i
       </div>
 
       <p className="mb-2 text-center text-xs font-bold tracking-[0.3em] text-accent">ANOTHER RESULT</p>
-      <h1 className="mb-8 text-center text-2xl font-black md:text-3xl">あの人のヒカマニ思想</h1>
+      <h1 className="mb-8 text-center text-2xl font-black md:text-3xl">
+        {sub.n ? `${sub.n}のヒカマニ思想` : "あの人のヒカマニ思想"}
+      </h1>
 
       <div className="mb-6 rounded-2xl border border-accent/40 bg-panel p-6 text-center md:p-10">
         {ideology?.tags && <div className="mb-2 text-lg tracking-widest">{ideology.tags}</div>}
@@ -147,6 +151,13 @@ export default async function PersonResultPage({ params }: { params: Promise<{ i
           </div>
         </section>
       )}
+
+      <div className="mb-8">
+        <ShareButtons
+          text={`【ヒカマーズ8values】\n${sub.n ?? "とあるヒカマー"}のヒカマニ思想は「${ideology?.name ?? sub.t}」(一致度${sub.m}%)でした。\nあなたも診断してみて。`}
+          url={`${SITE_URL}/r/${sub.id}`}
+        />
+      </div>
 
       <div className="mb-10 flex flex-wrap justify-center gap-3">
         <Link

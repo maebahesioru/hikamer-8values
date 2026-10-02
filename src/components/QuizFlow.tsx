@@ -33,6 +33,7 @@ const STORAGE_KEY = "hikamer8values.progress.v1";
 /** 匿名端末ID（結果ページの共有・集計用） */
 const CLIENT_KEY = "hikamer8values.client.v1";
 const SUBMITTED_KEY = "hikamer8values.submitted.v1";
+const NAME_KEY = "hikamer8values.name.v1";
 
 function getClientId(): string {
   try {
@@ -65,6 +66,7 @@ export default function QuizFlow() {
   const [phase, setPhase] = useState<"quiz" | "result">("quiz");
   const [hydrated, setHydrated] = useState(false);
   const [myId, setMyId] = useState<string | null>(null);
+  const [myName, setMyName] = useState("");
 
   const total = QUESTIONS.length;
 
@@ -156,7 +158,10 @@ export default function QuizFlow() {
           if (!res.ok) return;
           window.localStorage.setItem(SUBMITTED_KEY, sig);
         }
-        if (!cancelled) setMyId(cid);
+        if (!cancelled) {
+          setMyName(window.localStorage.getItem(NAME_KEY) ?? "");
+          setMyId(cid);
+        }
       } catch {
         /* オフライン等は無視（診断自体は成立する） */
       }
@@ -191,6 +196,29 @@ export default function QuizFlow() {
     retry();
   }
 
+  /** 公開名を保存（同じ端末ID・回答で再送信して上書き。空にすると匿名に戻る） */
+  async function saveName(name: string): Promise<boolean> {
+    try {
+      const cid = getClientId();
+      const res = await fetch("/api/results", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: cid, a: answers.map((v) => v ?? 0), n: name }),
+      });
+      if (!res.ok) return false;
+      const clean = name.replace(/[\u0000-\u001f\u007f]/g, "").trim().slice(0, 24);
+      try {
+        window.localStorage.setItem(NAME_KEY, clean);
+        window.localStorage.setItem(SUBMITTED_KEY, answers.join(","));
+      } catch {}
+      setMyId(cid);
+      setMyName(clean);
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
   if (!hydrated) {
     return (
       <main className="mx-auto w-full max-w-3xl grow px-4 pb-24 pt-8">
@@ -200,7 +228,7 @@ export default function QuizFlow() {
   }
 
   if (phase === "result" && result) {
-    return <ResultView scores={result.scores} ranked={result.ranked} onRetry={retry} myId={myId} />;
+    return <ResultView scores={result.scores} ranked={result.ranked} onRetry={retry} myId={myId} myName={myName} onSaveName={saveName} />;
   }
 
   const q = QUESTIONS[idx];
@@ -285,23 +313,34 @@ function ResultView({
   ranked,
   onRetry,
   myId,
+  myName,
+  onSaveName,
 }: {
   scores: Scores;
   ranked: MatchResult[];
   onRetry: () => void;
   myId: string | null;
+  myName: string;
+  onSaveName: (name: string) => Promise<boolean>;
 }) {
   const [copied, setCopied] = useState(false);
+  const [draftName, setDraftName] = useState(myName);
+  const [savingName, setSavingName] = useState(false);
+  const [nameSaved, setNameSaved] = useState(false);
+  useEffect(() => {
+    setDraftName(myName);
+  }, [myName]);
   const main = ranked[0];
   const sub = daiHikamerSubtype(main.ideology, scores);
   const share = shareText(scores, main);
+  const shareBody = myName ? share.replace("私のヒカマニ思想", `${myName}のヒカマニ思想`) : share;
   const origin = typeof window !== "undefined" ? window.location.origin : "";
   const myUrl = myId ? `${origin}/r/${myId}` : origin;
-  const intent = `https://twitter.com/intent/tweet?text=${encodeURIComponent(share)}&url=${encodeURIComponent(myUrl)}`;
+  const intent = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareBody)}&url=${encodeURIComponent(myUrl)}`;
 
   async function copy() {
     try {
-      await navigator.clipboard.writeText(`${share}\n${myUrl}`);
+      await navigator.clipboard.writeText(`${shareBody}\n${myUrl}`);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch {
@@ -397,6 +436,39 @@ function ResultView({
             </li>
           ))}
         </ul>
+      </section>
+
+      {/* 公開名（任意） */}
+      <section className="mb-8 rounded-2xl border border-line bg-panel p-6">
+        <h3 className="mb-1 text-sm font-bold tracking-widest text-mut">公開名（任意）</h3>
+        <p className="mb-4 text-xs leading-relaxed text-mut">
+          名前（XのIDや呼び名）を入れると、「みんなの結果」やあなたの結果ページに「◯◯の結果」として表示されます。空欄なら匿名（#IDのみ）のままです。
+        </p>
+        <div className="flex flex-col gap-2 sm:flex-row">
+          <input
+            value={draftName}
+            onChange={(e) => setDraftName(e.target.value)}
+            maxLength={24}
+            placeholder="例: @Hiwai_7"
+            className="grow rounded-xl border border-line bg-panel2 px-4 py-2.5 text-sm outline-none transition focus:border-accent"
+          />
+          <button
+            onClick={async () => {
+              setSavingName(true);
+              const ok = await onSaveName(draftName);
+              setSavingName(false);
+              setNameSaved(ok);
+              setTimeout(() => setNameSaved(false), 2500);
+            }}
+            disabled={savingName}
+            className="rounded-xl border border-line bg-panel2 px-6 py-2.5 text-sm font-bold transition hover:border-accent disabled:opacity-40"
+          >
+            {savingName ? "保存中…" : nameSaved ? "保存しました" : "保存"}
+          </button>
+        </div>
+        <p className="mt-3 text-[11px] text-mut">
+          現在の表示: {myName ? `${myName}の結果` : "匿名（#IDのみ）"}
+        </p>
       </section>
 
       {/* シェア */}

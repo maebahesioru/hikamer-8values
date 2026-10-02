@@ -5,6 +5,8 @@ import { IDEOLOGIES } from "@/data/results";
 import { QUESTIONS } from "@/data/questions";
 import { GAUGE_ORDER } from "@/lib/axis-ui";
 import { computeStats, fmtTs, loadSubmissions } from "@/lib/store";
+import ShareButtons from "@/components/ShareButtons";
+import { SITE_URL } from "@/lib/site";
 
 export const dynamic = "force-dynamic";
 
@@ -34,7 +36,7 @@ export default async function StatsPage() {
       <p className="mb-2 text-center text-xs font-bold tracking-[0.3em] text-accent">AGGREGATE</p>
       <h1 className="mb-2 text-center text-2xl font-black md:text-3xl">みんなの結果</h1>
       <p className="mb-10 text-center text-xs text-mut">
-        匿名のランダムIDのみで自動集計しています（1端末=1票・最新の回答を反映）
+        匿名のランダムIDで自動集計しています（1端末=1票・最新の回答）。表示名は入力した人だけ表示されます。
       </p>
 
       {t === 0 ? (
@@ -145,7 +147,10 @@ export default async function StatsPage() {
                       href={`/r/${r.id}`}
                       className="flex items-center justify-between gap-3 rounded-xl border border-line bg-panel2 px-4 py-2.5 text-sm transition hover:border-accent"
                     >
-                      <span className="truncate font-bold">{nameById.get(r.t)?.name ?? r.t}</span>
+                      <span className="truncate">
+                        <span className="font-bold">{r.n ?? "匿名"}</span>
+                        <span className="ml-2 text-xs text-mut">{nameById.get(r.t)?.name ?? r.t}</span>
+                      </span>
                       <span className="shrink-0 text-xs text-mut">
                         一致度 {r.m}%・{fmtTs(r.ts)}・#{r.id.slice(0, 6)}
                       </span>
@@ -158,6 +163,13 @@ export default async function StatsPage() {
               行をタップすると、その人の結果ページ（あの人はこんな感じ）が見られます。
             </p>
           </section>
+
+          <div className="mb-8">
+            <ShareButtons
+              text={`【ヒカマーズ8values】みんなの結果（${t}件）公開中。平均に最も近いのは「${stats.avgNearest?.name ?? ""}」。`}
+              url={`${SITE_URL}/stats`}
+            />
+          </div>
 
           <p className="mb-8 text-center text-xs leading-relaxed text-mut">
             回答と結果は匿名（ランダムIDのみ）で記録されています。個人を特定する情報は収集していません。

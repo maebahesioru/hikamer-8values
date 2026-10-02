@@ -182,7 +182,7 @@ export default function Home() {
             <Link href="/stats" className="mx-1 text-accent underline-offset-2 hover:underline">
               みんなの結果
             </Link>
-            として集計・公開されます。個人を特定する情報は一切収集しません。
+            として集計・公開されます。表示名（XのIDなど）は入力した場合だけ表示されます。個人を特定する情報をこちらから収集することはありません。
           </p>
         </div>
       </section>

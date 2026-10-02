@@ -16,6 +16,7 @@ export interface Submission {
   m: number; // 一致度（サーバ側で再計算）
   s: number[]; // 9軸スコア 0-100（AXES順）
   a: number[]; // 70問の回答 -2..2
+  n?: string; // 公開名（任意・入力時のみ） 
 }
 
 const DATA_DIR = process.env.DATA_DIR || path.join(process.cwd(), "data");
@@ -46,7 +47,16 @@ export function validateAndBuild(v: unknown): Submission | null {
     m: main.match,
     s: AXES.map((ax) => scores[ax]),
     a: answers,
+    n: cleanName(o.n),
   };
+}
+
+/** 公開名のサニタイズ（制御文字除去・24文字まで・空なら undefined=匿名） */
+export function cleanName(v: unknown): string | undefined {
+  if (typeof v !== "string") return undefined;
+  const s = v.replace(/[\u0000-\u001f\u007f\u2028\u2029]/g, "").trim();
+  if (!s) return undefined;
+  return s.slice(0, 24);
 }
 
 export async function appendSubmission(sub: Submission): Promise<void> {
@@ -119,7 +129,7 @@ export interface Stats {
   avgNearest: { name: string; match: number } | null; // 平均に最も近いタイプ
   typeCounts: { id: string; name: string; count: number }[];
   qDist: { p: number; z: number; n: number }[]; // 設問ごとの 賛成/中立/反対 人数
-  recent: { id: string; t: string; m: number; ts: number }[];
+  recent: { id: string; t: string; m: number; ts: number; n?: string }[];
 }
 
 export function computeStats(subs: Submission[], recentLimit = 60): Stats {
@@ -163,7 +173,7 @@ export function computeStats(subs: Submission[], recentLimit = 60): Stats {
   const recent = [...latest]
     .sort((a, b) => b.ts - a.ts)
     .slice(0, recentLimit)
-    .map((x) => ({ id: x.id, t: x.t, m: x.m, ts: x.ts }));
+    .map((x) => ({ id: x.id, t: x.t, m: x.m, ts: x.ts, n: x.n }));
 
   return { total, axisAvg, avgNearest, typeCounts, qDist, recent };
 }
