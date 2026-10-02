@@ -17,6 +17,7 @@ import {
 } from "@/lib/scoring";
 import { IDEOLOGIES } from "@/data/results";
 import type { Axis } from "@/data/questions";
+import { GAUGE_ORDER } from "@/lib/axis-ui";
 
 const OPTIONS: { label: string; value: number }[] = [
   { label: "賛成", value: 2 },
@@ -26,20 +27,27 @@ const OPTIONS: { label: string; value: number }[] = [
   { label: "反対", value: -2 },
 ];
 
-const GAUGE_ORDER: Record<Axis, { left: string; right: string; leftIsPlus: boolean; color: string }> = {
-  trad: { left: "伝統", right: "進歩", leftIsPlus: true, color: "#f4a261" },
-  rad: { left: "穏健", right: "過激", leftIsPlus: false, color: "#57d9a3" },
-  exp: { left: "閉鎖", right: "拡大", leftIsPlus: false, color: "#b197fc" },
-  lib: { left: "秩序", right: "自由", leftIsPlus: false, color: "#74c0fc" },
-  dev: { left: "反開發", right: "親開發", leftIsPlus: false, color: "#ff8787" },
-  gen: { left: "世代フラット", right: "古参崇敬", leftIsPlus: false, color: "#63e6be" },
-  sanc: { left: "平和", right: "制裁", leftIsPlus: false, color: "#d0bfff" },
-  pol: { left: "非政治", right: "政治親和", leftIsPlus: false, color: "#a9e34b" },
-  nare: { left: "孤高", right: "馴れ合い", leftIsPlus: false, color: "#66d9e8" },
-};
-
 /** 診断の進捗をリロード後も復元するための保存キー */
 const STORAGE_KEY = "hikamer8values.progress.v1";
+
+/** 匿名端末ID（結果ページの共有・集計用） */
+const CLIENT_KEY = "hikamer8values.client.v1";
+const SUBMITTED_KEY = "hikamer8values.submitted.v1";
+
+function getClientId(): string {
+  try {
+    let v = window.localStorage.getItem(CLIENT_KEY);
+    if (!v || !/^[a-z0-9]{6,32}$/.test(v)) {
+      const buf = new Uint8Array(6);
+      window.crypto.getRandomValues(buf);
+      v = Array.from(buf, (b) => b.toString(16).padStart(2, "0")).join("");
+      window.localStorage.setItem(CLIENT_KEY, v);
+    }
+    return v;
+  } catch {
+    return Math.random().toString(16).slice(2, 14);
+  }
+}
 
 interface SavedProgress {
   v: number;
@@ -56,6 +64,7 @@ export default function QuizFlow() {
   );
   const [phase, setPhase] = useState<"quiz" | "result">("quiz");
   const [hydrated, setHydrated] = useState(false);
+  const [myId, setMyId] = useState<string | null>(null);
 
   const total = QUESTIONS.length;
 
@@ -129,6 +138,34 @@ export default function QuizFlow() {
     return { scores, ranked };
   }, [phase, answers]);
 
+  // 結果確定時に匿名で自動送信（1端末=最新の1件として集計される）
+  useEffect(() => {
+    if (phase !== "result" || !result) return;
+    const sig = answers.join(",");
+    let cancelled = false;
+    (async () => {
+      try {
+        const cid = getClientId();
+        const marker = window.localStorage.getItem(SUBMITTED_KEY);
+        if (marker !== sig) {
+          const res = await fetch("/api/results", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ id: cid, a: answers.map((v) => v ?? 0) }),
+          });
+          if (!res.ok) return;
+          window.localStorage.setItem(SUBMITTED_KEY, sig);
+        }
+        if (!cancelled) setMyId(cid);
+      } catch {
+        /* オフライン等は無視（診断自体は成立する） */
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [phase, result, answers]);
+
   function answer(value: number) {
     const next = answers.slice();
     next[idx] = value;
@@ -163,7 +200,7 @@ export default function QuizFlow() {
   }
 
   if (phase === "result" && result) {
-    return <ResultView scores={result.scores} ranked={result.ranked} onRetry={retry} />;
+    return <ResultView scores={result.scores} ranked={result.ranked} onRetry={retry} myId={myId} />;
   }
 
   const q = QUESTIONS[idx];
@@ -247,21 +284,24 @@ function ResultView({
   scores,
   ranked,
   onRetry,
+  myId,
 }: {
   scores: Scores;
   ranked: MatchResult[];
   onRetry: () => void;
+  myId: string | null;
 }) {
   const [copied, setCopied] = useState(false);
   const main = ranked[0];
   const sub = daiHikamerSubtype(main.ideology, scores);
   const share = shareText(scores, main);
-  const shareUrl = typeof window !== "undefined" ? window.location.origin : "";
-  const intent = `https://twitter.com/intent/tweet?text=${encodeURIComponent(share)}&url=${encodeURIComponent(shareUrl)}`;
+  const origin = typeof window !== "undefined" ? window.location.origin : "";
+  const myUrl = myId ? `${origin}/r/${myId}` : origin;
+  const intent = `https://twitter.com/intent/tweet?text=${encodeURIComponent(share)}&url=${encodeURIComponent(myUrl)}`;
 
   async function copy() {
     try {
-      await navigator.clipboard.writeText(`${share}\n${shareUrl}`);
+      await navigator.clipboard.writeText(`${share}\n${myUrl}`);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch {
@@ -383,11 +423,30 @@ function ResultView({
             もう一度診断する
           </button>
         </div>
+        <div className="flex flex-wrap justify-center gap-x-5 gap-y-2 text-xs">
+          {myId && (
+            <Link
+              href={`/r/${myId}`}
+              className="text-accent underline underline-offset-2 transition hover:opacity-80"
+            >
+              あなたの結果ページを見る（共有用）
+            </Link>
+          )}
+          <Link
+            href="/stats"
+            className="text-mut underline underline-offset-2 transition hover:text-foreground"
+          >
+            みんなの結果（統計）
+          </Link>
+        </div>
         <Link href="/" className="text-xs text-mut underline-offset-4 hover:underline">
           トップに戻る
         </Link>
       </div>
 
+      <p className="mb-2 text-center text-xs leading-relaxed text-mut">
+        ※回答と結果は匿名（ランダムIDのみ）で記録され、みんなの結果として自動集計されます。
+      </p>
       <p className="text-center text-xs leading-relaxed text-mut">
         ※この診断は 8values のオマージュです。思想名・分類は界隈の呼称をネタとして扱ったもので、
         特定の立場の推奨ではありません。元ネタ: ヒカマーズグラフ・ヒカマーズ思想（@Hiwai_7）、

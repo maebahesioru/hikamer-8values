@@ -45,12 +45,17 @@ export default function Home() {
     <main className="grow">
       <header className="mx-auto flex w-full max-w-5xl items-center justify-between px-4 pt-6">
         <span className="text-sm font-black tracking-wider">ヒカマーズ8values</span>
-        <Link
-          href="/quiz?start=1"
-          className="rounded-lg border border-line px-4 py-2 text-xs font-bold transition hover:border-accent"
-        >
-          診断する
-        </Link>
+        <div className="flex items-center gap-4">
+          <Link href="/stats" className="text-xs text-mut transition hover:text-foreground">
+            みんなの結果
+          </Link>
+          <Link
+            href="/quiz?start=1"
+            className="rounded-lg border border-line px-4 py-2 text-xs font-bold transition hover:border-accent"
+          >
+            診断する
+          </Link>
+        </div>
       </header>
 
       {/* ヒーロー */}
@@ -75,6 +80,11 @@ export default function Home() {
           診断をはじめる
         </Link>
         <p className="mt-4 text-xs text-mut">所要時間: 約5分／登録不要／全52タイプ</p>
+        <p className="mt-3 text-xs">
+          <Link href="/stats" className="text-accent underline-offset-2 hover:underline">
+            みんなの結果（9軸の平均・タイプ分布）を見る →
+          </Link>
+        </p>
       </section>
 
       {/* 9つの軸 */}
@@ -163,9 +173,16 @@ export default function Home() {
             ヒカマー界隈の思想・派閥・勢力・ノリを9つの軸・18の価値に落とし込んだファン診断です。
             全70問に直感で答えると、9軸であなたの座標が決まり、最も近いタイプ（全52種）が表示されます。
           </p>
-          <p>
+          <p className="mb-3">
             結果はネタです。誰かを攻撃するためのものではありません。気に入ったらXでシェアして、
             友達の思想も診断してあげてください。
+          </p>
+          <p>
+            回答と結果は匿名のランダムIDのみで自動記録され、
+            <Link href="/stats" className="mx-1 text-accent underline-offset-2 hover:underline">
+              みんなの結果
+            </Link>
+            として集計・公開されます。個人を特定する情報は一切収集しません。
           </p>
         </div>
       </section>
@@ -184,6 +201,11 @@ export default function Home() {
               @Hiwai_7
             </a>
             ）／ヒカマーwiki「ヒカマー界隈のイデオロギー一覧」／8values.github.io のオマージュ
+          </p>
+          <p className="mt-2">
+            <Link href="/stats" className="text-accent underline-offset-2 hover:underline">
+              みんなの結果（匿名の自動集計）
+            </Link>
           </p>
         </div>
       </footer>

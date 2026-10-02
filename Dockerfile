@@ -16,7 +16,9 @@ RUN --mount=type=cache,id=next-build-cache,target=/app/.next/cache pnpm run buil
 FROM base AS runner
 WORKDIR /app
 ENV NODE_ENV production
+ENV DATA_DIR=/app/data
 RUN addgroup --system --gid 1001 nodejs && adduser --system --uid 1001 nextjs
+RUN mkdir -p /app/data && chown nextjs:nodejs /app/data
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 COPY --from=builder --chown=nextjs:nodejs /app/public ./public
