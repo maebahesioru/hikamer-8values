@@ -79,7 +79,7 @@ export default function Home() {
 
       {/* 4つの軸 */}
       <section className="mx-auto w-full max-w-5xl px-4 pb-16">
-        <h2 className="mb-6 text-center text-xl font-black">診断の4軸</h2>
+        <h2 className="mb-6 text-center text-xl font-black">診断の9軸</h2>
         <div className="grid gap-4 md:grid-cols-2">
           {AXIS_CARDS.map((a) => (
             <div key={a.t} className="rounded-2xl border border-line bg-panel p-6">
