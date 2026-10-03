@@ -57,7 +57,9 @@ export default async function StatsPage() {
               <p className="mb-6 text-center text-base md:text-lg">
                 平均に最も近いのは{" "}
                 <span className="text-xl font-black text-accent md:text-2xl">{stats.avgNearest.name}</span>
-                <span className="ml-2 text-xs text-mut">一致度 {stats.avgNearest.match}%</span>
+                <span className="ml-2 whitespace-nowrap text-xs text-mut">
+                  一致度 {stats.avgNearest.match}%
+                </span>
               </p>
             )}
             <div className="flex flex-col gap-4">
