@@ -17,11 +17,19 @@ export interface Submission {
   s: number[]; // 9軸スコア 0-100（AXES順）
   a: number[]; // 70問の回答 -2..2
   n?: string; // 公開名（任意・入力時のみ） 
+  qv?: number; // 質問バージョン（v3以降付与。未設定=旧版）
 }
 
 const DATA_DIR = process.env.DATA_DIR || path.join(process.cwd(), "data");
 const FILE = path.join(DATA_DIR, "results.jsonl");
 const ID_RE = /^[a-z0-9]{6,32}$/;
+
+/** 質問文の改訂バージョン（v3=2026-10「賛否が割れる」改訂） */
+export const QUESTIONS_VERSION = 3;
+/** v3で文面を改訂した設問ID（この設問の分布は qv>=3 の回答のみ対象） */
+export const CHANGED_QUESTIONS_V3: number[] = [
+  1, 3, 11, 14, 16, 22, 24, 27, 35, 41, 42, 44, 45, 46, 49, 50, 54, 56, 57, 60, 62, 64, 67,
+];
 
 /** クライアントから届いた {id, a} を検証して保存用レコードに変換（スコアはサーバ側で再計算） */
 export function validateAndBuild(v: unknown): Submission | null {
@@ -48,6 +56,7 @@ export function validateAndBuild(v: unknown): Submission | null {
     s: AXES.map((ax) => scores[ax]),
     a: answers,
     n: cleanName(o.n),
+    qv: QUESTIONS_VERSION,
   };
 }
 
@@ -158,10 +167,12 @@ export function computeStats(subs: Submission[], recentLimit = 60): Stats {
     .sort((a, b) => b.count - a.count);
 
   const qDist = Array.from({ length: 70 }, (_, i) => {
+    const changed = CHANGED_QUESTIONS_V3.includes(i + 1);
     let p = 0;
     let z = 0;
     let n = 0;
     for (const x of latest) {
+      if (changed && (x.qv ?? 2) < QUESTIONS_VERSION) continue; // 改訂前の回答は除外
       const v = x.a[i];
       if (v >= 1) p++;
       else if (v <= -1) n++;

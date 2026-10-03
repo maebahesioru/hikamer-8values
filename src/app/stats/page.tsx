@@ -108,12 +108,16 @@ export default async function StatsPage() {
 
           <section className="mb-8 rounded-2xl border border-line bg-panel p-6 md:p-8">
             <h2 className="mb-2 text-sm font-bold tracking-widest text-mut">設問別の回答分布</h2>
-            <p className="mb-5 text-xs text-mut">みんなが賛成している設問・界隈で割れている設問がわかります。</p>
+            <p className="mb-2 text-xs text-mut">みんなが賛成している設問・界隈で割れている設問がわかります。</p>
+            <p className="mb-5 text-[11px] leading-relaxed text-mut">
+              ※2026年10月に一部の設問を「より賛否が割れる」文面に改訂しました。改訂済みの設問は、改訂後の回答のみで集計しています。
+            </p>
             <div className="flex flex-col gap-4">
               {QUESTIONS.map((q, i) => {
                 const d = stats.qDist[i];
-                const pP = pct(d.p, t);
-                const zP = pct(d.z, t);
+                const qTotal = d.p + d.z + d.n;
+                const pP = pct(d.p, qTotal);
+                const zP = pct(d.z, qTotal);
                 const nP = Math.max(0, 100 - pP - zP);
                 return (
                   <div key={q.id}>
@@ -121,16 +125,22 @@ export default async function StatsPage() {
                       <span className="mr-2 font-bold text-mut">Q{q.id}</span>
                       {q.text}
                     </p>
-                    <div className="flex h-3.5 overflow-hidden rounded-full bg-panel2">
-                      <div style={{ width: `${pP}%`, background: "#1d9bf0" }} />
-                      <div style={{ width: `${zP}%`, background: "#3a4657" }} />
-                      <div className="grow" style={{ background: "#ff6b6b" }} />
-                    </div>
-                    <p className="mt-0.5 flex gap-4 text-[11px] tabular-nums text-mut">
-                      <span>賛成 {pP}%</span>
-                      <span>どちらでもない {zP}%</span>
-                      <span>反対 {nP}%</span>
-                    </p>
+                    {qTotal === 0 ? (
+                      <p className="text-[11px] text-mut">設問改訂済み — 新しい回答を集計中…</p>
+                    ) : (
+                      <>
+                        <div className="flex h-3.5 overflow-hidden rounded-full bg-panel2">
+                          <div style={{ width: `${pP}%`, background: "#1d9bf0" }} />
+                          <div style={{ width: `${zP}%`, background: "#3a4657" }} />
+                          <div className="grow" style={{ background: "#ff6b6b" }} />
+                        </div>
+                        <p className="mt-0.5 flex gap-4 text-[11px] tabular-nums text-mut">
+                          <span>賛成 {pP}%</span>
+                          <span>どちらでもない {zP}%</span>
+                          <span>反対 {nP}%</span>
+                        </p>
+                      </>
+                    )}
                   </div>
                 );
               })}
