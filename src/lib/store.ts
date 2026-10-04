@@ -24,13 +24,14 @@ const DATA_DIR = process.env.DATA_DIR || path.join(process.cwd(), "data");
 const FILE = path.join(DATA_DIR, "results.jsonl");
 const ID_RE = /^[a-z0-9]{6,32}$/;
 
-/** 質問文の改訂バージョン（v3=2026-10「賛否が割れる」改訂 / v4=Q47を原版に復帰） */
-export const QUESTIONS_VERSION = 4;
+/** 質問文の改訂バージョン（v3=第1弾「賛否が割れる」改訂 / v4=Q47原版復帰 / v5=第2弾） */
+export const QUESTIONS_VERSION = 5;
 /** v3で文面を改訂した設問ID（この設問の分布は qv>=3 の回答のみ対象） */
 export const CHANGED_QUESTIONS_V3: number[] = [
-  1, 3, 4, 11, 14, 16, 17, 22, 24, 27, 35, 36, 41, 42, 44, 45, 46, 49, 50, 54, 56, 57, 60, 62,
-  64, 67,
+  1, 3, 4, 11, 14, 16, 17, 22, 24, 27, 35, 41, 42, 44, 45, 46, 50, 54, 56, 60, 64, 67,
 ];
+/** v5でさらに書き直した設問ID（この設問の分布は qv>=5 の回答のみ対象） */
+export const CHANGED_QUESTIONS_V5: number[] = [36, 49, 57, 62];
 /** v3で反転→v4で原版に戻した設問ID（qv=3の反転文面の回答を除外し、旧回答＋新回答を合算） */
 export const REVERTED_QUESTIONS_V4: number[] = [47];
 
@@ -171,14 +172,16 @@ export function computeStats(subs: Submission[], recentLimit = 60): Stats {
 
   const qDist = Array.from({ length: 70 }, (_, i) => {
     const qid = i + 1;
-    const changed = CHANGED_QUESTIONS_V3.includes(qid);
+    const changed3 = CHANGED_QUESTIONS_V3.includes(qid);
+    const changed5 = CHANGED_QUESTIONS_V5.includes(qid);
     const reverted = REVERTED_QUESTIONS_V4.includes(qid);
     let p = 0;
     let z = 0;
     let n = 0;
     for (const x of latest) {
       const xv = x.qv ?? 2;
-      if (changed && xv < 3) continue; // v3改訂前の回答は除外
+      if (changed3 && xv < 3) continue; // v3改訂前の回答は除外
+      if (changed5 && xv < 5) continue; // v5改訂前の回答は除外
       if (reverted && xv === 3) continue; // v3の反転文面の回答は除外
       const v = x.a[i];
       if (v >= 1) p++;
