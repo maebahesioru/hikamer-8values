@@ -138,6 +138,7 @@ export default async function StatsPage() {
                           <span>賛成 {pP}%</span>
                           <span>どちらでもない {zP}%</span>
                           <span>反対 {nP}%</span>
+                          <span className="ml-auto">集計 n={qTotal}</span>
                         </p>
                       </>
                     )}
